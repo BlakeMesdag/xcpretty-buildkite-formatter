@@ -1,6 +1,6 @@
 # BuildkiteFormatter
 
-Takes FBSnapshotTestCase output and copies the artifacts to the first directory in BUILDKITE_ARTIFACT_PATHS.
+Uploads and inlines FBSnapshotTestCase artifacts using `buildkite-agent` when on [Buildkite](https://buildkite.com). Spits out a nice yellow warning with the filepaths if not on [Buildkite](https://buildkite.com).
 
 ## Installation
 
