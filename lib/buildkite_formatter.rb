@@ -6,16 +6,18 @@ class BuildkiteFormatter < XCPretty::Simple
 
   def pretty_format(text)
     if KSDIFF_MATCHER.match(text)
-      upload_artifacts($1, $2)
-      inline_artifacts($1, $2)
+      if buildkite?
+        upload_artifacts($1, $2)
+        inline_artifacts($1, $2)
+      else
+        STDOUT.puts("\e[33mNot on Buildkite, would have uploaded: \n  #{$1}\n  #{$2}\e[0m")
+      end
     end
 
     parser.parse(text)
   end
 
   def inline_artifacts(*artifacts)
-    return unless buildkite?
-
     artifacts.each do |artifact|
       image_contents = Base64.encode64(File.read(artifact)).gsub("\n", '')
       image_name = Base64.encode64(File.basename(artifact)).gsub("\n", '')
@@ -25,8 +27,6 @@ class BuildkiteFormatter < XCPretty::Simple
   end
 
   def upload_artifacts(*artifacts)
-    return unless buildkite?
-
     artifacts.each do |artifact|
       Kernel.system('buildkite-agent', 'artifact', 'upload', artifact)
     end

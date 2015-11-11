@@ -40,6 +40,14 @@ class BuildkiteFormatterTest < Minitest::Test
     @formatter.pretty_format(ksdiff_text)
   end
 
+  def test_not_on_buildkite
+    @formatter.unstub(:buildkite?)
+
+    STDOUT.expects(:puts).with("\e[33mNot on Buildkite, would have uploaded: \n  reference_file.png\n  failed_file.png\e[0m")
+
+    @formatter.pretty_format(ksdiff_text)
+  end
+
   private
 
   def ksdiff_text
